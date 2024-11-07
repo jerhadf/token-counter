@@ -133,7 +133,7 @@ export function TokenCounter() {
               className="text-[#AE5530] hover:underline"
             >
               Anthropic token counting documentation
-            </a>
+            </a>{" "}
             and the{" "}
             <a
               href="https://github.com/jerhadf/token-counter"
