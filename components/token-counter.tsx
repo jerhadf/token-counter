@@ -1,12 +1,14 @@
-"'use client'";
+"use client";
 
 import { useState, useTransition } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
+// fetches token count from api for given text
 async function getTokenCount(text: string): Promise<number> {
   try {
+    // make post request to token counting endpoint
     const res = await fetch("/api/count-tokens", {
       method: "POST",
       headers: {
@@ -14,34 +16,50 @@ async function getTokenCount(text: string): Promise<number> {
       },
       body: JSON.stringify({ text }),
     });
+
+    // throw error if request failed
     if (!res.ok) throw new Error("Failed to fetch token count");
+
+    // extract and return token count from response
     const data = await res.json();
     return data.tokens;
   } catch (error) {
+    // log and re-throw any errors
     console.error("Error fetching token count:", error);
     throw error;
   }
 }
 
 export function TokenCounter() {
-  const [text, setText] = useState("''");
+  const [text, setText] = useState("");
   const [tokenCount, setTokenCount] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  // handles text input changes and updates token count
   const handleTextChange = (value: string) => {
+    // update text state and clear any previous errors
     setText(value);
     setError(null);
+
+    // start async transition to count tokens
     startTransition(async () => {
       if (value.trim()) {
         try {
+          // get token count from api and update state
           const count = await getTokenCount(value);
           setTokenCount(count);
-        } catch (err) {
-          setError("Failed to count tokens. Please try again.");
+        } catch (error) {
+          // handle api errors by showing message and clearing count
+          setError(
+            `Failed to count tokens: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }. Please try again.`
+          );
           setTokenCount(null);
         }
       } else {
+        // clear token count if text is empty
         setTokenCount(null);
       }
     });
