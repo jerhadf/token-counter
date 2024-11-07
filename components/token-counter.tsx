@@ -62,7 +62,7 @@ export function TokenCounter() {
   const charCount = text.length;
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] font-serif p-8 flex items-center justify-center">
+    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] p-8 flex items-center justify-center">
       <div className="max-w-4xl w-full space-y-16">
         <header className="text-center">
           <h1 className="text-7xl font-normal tracking-tight font-serif">
@@ -70,54 +70,73 @@ export function TokenCounter() {
           </h1>
         </header>
 
-        <Card className="p-10 bg-white rounded-3xl shadow-sm border-0">
-          <div className="space-y-10">
-            <Textarea
-              value={text}
-              onChange={(e) => handleTextChange(e.target.value)}
-              placeholder="Paste your text here..."
-              className="min-h-[400px] text-xl leading-relaxed rounded-2xl
-                        bg-white border border-neutral-200
-                        focus:ring-2 focus:ring-[#AE5530]/20 focus:border-[#AE5530]/30
-                        hover:border-neutral-300 resize-y transition-shadow duration-300
-                        placeholder:text-neutral-500"
-            />
+        <div className="space-y-6">
+          <Card className="p-10 bg-white rounded-3xl shadow-sm border-0">
+            <div className="space-y-10">
+              <Textarea
+                value={text}
+                onChange={(e) => handleTextChange(e.target.value)}
+                placeholder="Paste your text here..."
+                className="min-h-[400px] text-4xl leading-relaxed rounded-2xl
+                          bg-white border border-neutral-200 font-sans
+                          focus:ring-0 focus:border-[#AE5530]
+                          hover:border-neutral-300 resize-y
+                          transition-all duration-300 ease-out
+                          placeholder:text-neutral-500
+                          focus:shadow-[0_0_40px_rgba(174,85,48,0.2)]"
+              />
 
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center text-red-900 text-sm">
-                <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            <div className="grid grid-cols-3 gap-12">
-              {[
-                { label: "WORDS", value: wordCount },
-                { label: "TOKENS", value: tokenCount },
-                { label: "CHARACTERS", value: charCount },
-              ].map(({ label, value }) => (
-                <div key={label} className="text-center">
-                  <div className="text-sm tracking-widest text-gray-500 mb-2">
-                    {label}
-                  </div>
-                  <div
-                    className={`tabular-nums ${
-                      label === "TOKENS"
-                        ? "text-6xl font-semibold"
-                        : "text-4xl text-gray-600"
-                    }`}
-                  >
-                    {label === "TOKENS" && isPending
-                      ? "..."
-                      : value !== null
-                      ? value.toLocaleString()
-                      : "-"}
-                  </div>
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center text-red-900 text-sm">
+                  <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span>{error}</span>
                 </div>
-              ))}
+              )}
+
+              <div className="grid grid-cols-3 gap-12">
+                {[
+                  { label: "WORDS", value: wordCount },
+                  { label: "TOKENS", value: tokenCount },
+                  { label: "CHARACTERS", value: charCount },
+                ].map(({ label, value }) => (
+                  <div key={label} className="text-center">
+                    <div className="text-sm tracking-widest text-gray-500 mb-2 font-sans">
+                      {label}
+                    </div>
+                    <div
+                      className={`tabular-nums font-sans ${
+                        label === "TOKENS"
+                          ? "text-6xl font-semibold"
+                          : "text-4xl text-gray-600"
+                      }`}
+                    >
+                      {label === "TOKENS" && isPending
+                        ? "..."
+                        : value !== null
+                        ? value.toLocaleString()
+                        : "-"}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+
+          <p className="text-sm text-gray-500 text-center px-4">
+            This interface calculates the number of tokens in text requests to
+            the Anthropic API. Use it to count the tokens in system prompts or
+            messages to Claude models. For more details, see the{" "}
+            <a
+              href="https://docs.anthropic.com/en/docs/build-with-claude/token-counting"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#AE5530] hover:underline"
+            >
+              Anthropic token counting documentation
+            </a>
+            .
+          </p>
+        </div>
       </div>
     </div>
   );
