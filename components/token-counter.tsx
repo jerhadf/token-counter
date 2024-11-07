@@ -5,26 +5,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
-// fetches token count from api for given text
 async function getTokenCount(text: string): Promise<number> {
   try {
-    // make post request to token counting endpoint
+    console.log(
+      "Sending request to Anthropic API with text:",
+      text.substring(0, 100) + "..."
+    );
+
     const res = await fetch("/api/count-tokens", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
     });
 
-    // throw error if request failed
     if (!res.ok) throw new Error("Failed to fetch token count");
-
-    // extract and return token count from response
     const data = await res.json();
+
+    console.log("Received response from Anthropic API:", data);
     return data.tokens;
   } catch (error) {
-    // log and re-throw any errors
     console.error("Error fetching token count:", error);
     throw error;
   }
@@ -36,21 +35,16 @@ export function TokenCounter() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  // handles text input changes and updates token count
   const handleTextChange = (value: string) => {
-    // update text state and clear any previous errors
     setText(value);
     setError(null);
 
-    // start async transition to count tokens
     startTransition(async () => {
       if (value.trim()) {
         try {
-          // get token count from api and update state
           const count = await getTokenCount(value);
           setTokenCount(count);
         } catch (error) {
-          // handle api errors by showing message and clearing count
           setError(
             `Failed to count tokens: ${
               error instanceof Error ? error.message : "Unknown error"
@@ -59,7 +53,6 @@ export function TokenCounter() {
           setTokenCount(null);
         }
       } else {
-        // clear token count if text is empty
         setTokenCount(null);
       }
     });
@@ -69,13 +62,10 @@ export function TokenCounter() {
   const charCount = text.length;
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] font-serif p-8">
-      <div className="max-w-4xl mx-auto space-y-16">
-        <header className="text-center space-y-6">
-          <div className="size-12 mx-auto bg-black rounded-lg flex items-center justify-center">
-            <div className="w-0 h-0 border-l-[10px] border-l-transparent border-b-[16px] border-b-white border-r-[10px] border-r-transparent" />
-          </div>
-          <h1 className="text-6xl font-normal tracking-tight">
+    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] font-serif p-8 flex items-center justify-center">
+      <div className="max-w-4xl w-full space-y-16">
+        <header className="text-center">
+          <h1 className="text-7xl font-normal tracking-tight font-serif">
             Anthropic Token Counter
           </h1>
         </header>
@@ -86,33 +76,41 @@ export function TokenCounter() {
               value={text}
               onChange={(e) => handleTextChange(e.target.value)}
               placeholder="Paste your text here..."
-              className="min-h-[400px] text-lg leading-relaxed rounded-2xl bg-gray-50
-                            focus:ring-1 focus:ring-black focus:bg-white
-                           hover:bg-gray-50/80 resize-y"
+              className="min-h-[400px] text-xl leading-relaxed rounded-2xl
+                        bg-white border border-neutral-200
+                        focus:ring-2 focus:ring-[#AE5530]/20 focus:border-[#AE5530]/30
+                        hover:border-neutral-300 resize-y transition-shadow duration-300
+                        placeholder:text-neutral-500"
             />
 
             {error && (
-              <div className="p-4 bg-red-50 border border-neutral-200 border-red-100 rounded-xl flex items-center text-red-900 text-sm dark:border-neutral-800">
+              <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center text-red-900 text-sm">
                 <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-3 gap-12">
               {[
-                { label: "TOKENS", value: tokenCount },
                 { label: "WORDS", value: wordCount },
+                { label: "TOKENS", value: tokenCount },
                 { label: "CHARACTERS", value: charCount },
               ].map(({ label, value }) => (
                 <div key={label} className="text-center">
-                  <div className="text-sm tracking-widest text-gray-600 mb-2">
+                  <div className="text-sm tracking-widest text-gray-500 mb-2">
                     {label}
                   </div>
-                  <div className="text-4xl tabular-nums">
+                  <div
+                    className={`tabular-nums ${
+                      label === "TOKENS"
+                        ? "text-6xl font-semibold"
+                        : "text-4xl text-gray-600"
+                    }`}
+                  >
                     {label === "TOKENS" && isPending
                       ? "..."
                       : value !== null
-                      ? value
+                      ? value.toLocaleString()
                       : "-"}
                   </div>
                 </div>
