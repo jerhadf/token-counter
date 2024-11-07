@@ -134,6 +134,15 @@ export function TokenCounter() {
             >
               Anthropic token counting documentation
             </a>
+            and the{" "}
+            <a
+              href="https://github.com/jerhadf/token-counter"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#AE5530] hover:underline"
+            >
+              source code
+            </a>
             .
           </p>
         </div>

@@ -1,5 +1,7 @@
 # Anthropic Token Counter
 
+https://anthropic-token-counter.vercel.app/
+
 A quick, simple token counting interface for Anthropic's API. This tool helps developers accurately count tokens for their Claude requests.
 
 Uses Anthropic's official token counting API (https://docs.anthropic.com/en/docs/build-with-claude/token-counting).
@@ -31,13 +33,9 @@ pnpm dev
 
 ## Tech Stack
 
-- [Next.js 14](https://nextjs.org/)
-- TypeScript - Type safety
-- [Anthropic API](https://docs.anthropic.com/) - Token counting
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- TypeScript
+- [Next.js](https://nextjs.org/)
+- [Anthropic API](https://docs.anthropic.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 - Started with [create-next-app](https://nextjs.org/docs/api-reference/create-next-app)
 - Initial interface created with [v0](https://v0.dev/chat)
-****
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
