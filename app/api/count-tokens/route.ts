@@ -5,6 +5,12 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 })
 
+if (!process.env.ANTHROPIC_API_KEY) {
+  throw new Error('ANTHROPIC_API_KEY is not set')
+}
+
+console.log("Valid API key received:", !!process.env.ANTHROPIC_API_KEY, "Last 4 digits:", (process.env.ANTHROPIC_API_KEY || "").slice(-4))
+
 const MODEL = "claude-3-5-sonnet-20241022"
 
 export async function POST(req: Request) {
@@ -27,6 +33,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ tokens: response.input_tokens })
   } catch (error) {
     console.error("Token counting error:", error)
-    return NextResponse.json({ error: "Failed to count tokens" }, { status: 500 })
+
+    // provide more specific error messages
+    if (error instanceof Anthropic.APIError) {
+      return NextResponse.json(
+        { error: `Anthropic API error: ${error.message}` },
+        { status: error.status || 500 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: "Failed to count tokens" },
+      { status: 500 }
+    )
   }
 }
