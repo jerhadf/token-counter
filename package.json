@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm validate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "validate": "pnpm type-check && pnpm lint"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
